@@ -11,6 +11,16 @@ import time
 pygame.init()
 pyplot.axis('off')
 pyplot.grid(b=None)
+pyplot.tight_layout(pad=0.0, w_pad=0.0, h_pad=0.0)
+
+pyplot.gca().set_axis_off()
+
+pyplot.margins(0,0)
+pyplot.gca().xaxis.set_major_locator(pyplot.NullLocator())
+pyplot.gca().yaxis.set_major_locator(pyplot.NullLocator())
+
+#pyplot.savefig("fileOut.PNG", bbox_inches = 'tight', pad_inches = 0)
+pyplot.savefig("fileOut.PNG", format='png', transparent=True, dpi=300, pad_inches = 0)
 #ion()
 WIDTH = 640
 HEIGHT = 640
@@ -171,6 +181,7 @@ class pygameLogic:
                 self.tick = 0
                 pyplot.show()
                 self.ShowBool = 0
+#                pyplot.savefig('test.png', bbox_inches='tight',pad_inches = 0, dpi = 200)
 
         return self
 
