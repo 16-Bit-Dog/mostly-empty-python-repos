@@ -20,7 +20,8 @@ pyplot.gca().xaxis.set_major_locator(pyplot.NullLocator())
 pyplot.gca().yaxis.set_major_locator(pyplot.NullLocator())
 
 #pyplot.savefig("fileOut.PNG", bbox_inches = 'tight', pad_inches = 0)
-pyplot.savefig("fileOut.PNG", format='png', transparent=True, dpi=300, pad_inches = 0)
+#pyplot.savefig("fileOut.svg", format='svg', transparent=True, dpi=1200, pad_inches = 0)
+
 #ion()
 WIDTH = 640
 HEIGHT = 640
@@ -42,13 +43,13 @@ class pygameLogic:
 
         self.B1 = FONT.render('L-Fringe', True, GREEN, BLUE)
         self.B2 = FONT.render('H-Dark', True, GREEN, BLUE)
-        self.B3 = FONT.render('S-Light', True, GREEN, BLUE)
-        self.B4 = FONT.render('Text', True, GREEN, BLUE)
+        self.B3 = FONT.render('Pixelate', True, GREEN, BLUE)
+        self.B4 = FONT.render('AltLine', True, GREEN, BLUE)
         self.B5 = FONT.render('Text', True, GREEN, BLUE)
 
         self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
-        self.D2 = FONT.render('You can also save; click the cartridge button!', True, GREEN, (0,0,0,0))
-
+        self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
+        self.D3 = FONT.render('It can take time to load the image filter on slower hardware!', True, GREEN, (0,0,0,0))
         self.pos = (0,0)
 
         self.NeedImage = 0 # start image loader as false
@@ -78,6 +79,72 @@ class pygameLogic:
 
         pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
         return self
+
+    def FilterHDark(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+
+        for i in range(len(self.imageData[1])): # y
+            for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
+                if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) < 400):
+                    arr = np.array([self.imageData[1][i][ii][0]*0.3, self.imageData[1][i][ii][1]*0.3, self.imageData[1][i][ii][2]*0.3])
+                    self.imageData[1][i][ii] = arr
+                    #refrence y and then x axis
+
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
+        def FilterAltLine(self):
+            self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+
+            for i in range(len(self.imageData[1])): # y
+                for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
+                    if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) < 400):
+                        if(i%2 == 0):
+                            arr = np.array([self.imageData[1][i][ii][0]*0.2, self.imageData[1][i][ii][1]*0.2, self.imageData[1][i][ii][2]*0.2])
+                            self.imageData[1][i][ii] = arr
+                        
+                        else:
+                            arr = np.array([self.imageData[1][i][ii][0]*1.3, self.imageData[1][i][ii][1]*1.3, self.imageData[1][i][ii][2]*1.3])
+                            self.imageData[1][i][ii] = arr
+                        
+                            
+            pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+            return self
+
+
+    def FilterPixelate(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+        #sets 5 pixels around 1 pixel the same as the 1 pixel - makes a pixalate color style
+        for i in range(int(len(self.imageData[1])/3)-1): # y
+            for ii in range(int(len(self.imageData[1][i])/3)-1): #tuple of row - x of image
+                #if(int(self.imageData[1][i*5][ii*5][0]) + int(self.imageData[1][i*5][ii*5][1]) + int(self.imageData[1][i*5][ii*%][2]) < 400):
+                    
+                    
+                arr = np.array([self.imageData[1][i*3][ii*3][0], self.imageData[1][i*3][ii*3][1], self.imageData[1][i*3][ii*3][2]])
+                
+                
+                if (i*3+1<len(self.imageData[1]) and ii*3-1<0):
+                    self.imageData[1][i*3+1][ii*3-1] = arr
+                if (i*3-1>0 and ii*3+1>len(self.imageData[1][0])):
+                    self.imageData[1][i35-1][ii*3+1] = arr
+                if (i*3-1>0 and ii*3-1>0):
+                    self.imageData[1][i*3-1][ii*3-1] = arr
+                if (i*3-1>0):
+                    self.imageData[1][i*3-1][ii*3] = arr
+                if (ii*3-1>0):
+                    self.imageData[1][i*3][ii*3-1] = arr
+                if (i*3+1<len(self.imageData[1])):
+                    self.imageData[1][i*3+1][ii*3] = arr
+                if (ii*3+1<len(self.imageData[1][i*3])):
+                    self.imageData[1][i*3][ii*3+1] = arr
+                if (i*3+1<len(self.imageData[1]) and ii*3+1<len(self.imageData[1][i*3])):
+                    self.imageData[1][i*3+1][ii*3+1] = arr
+
+                    #refrence y and then x axis
+
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
     def SelectButton(self):
         #choose a button to filter with
 
@@ -103,11 +170,11 @@ class pygameLogic:
             if (pygame.mouse.get_pos()[1] > 0 and pygame.mouse.get_pos()[1] < self.B1.get_height()):
                 if (pygame.mouse.get_pos()[0] > 0 and pygame.mouse.get_pos()[0] < 140):#I did not normalize these points to allow fine tuning if needed - plus this way iamges can be added easily 
                     self.FilterMode = 0
-                elif (pygame.mouse.get_pos()[0] > 150 and pygame.mouse.get_pos()[0] < 290 + self.B2.get_width()):
+                elif (pygame.mouse.get_pos()[0] > 150 and pygame.mouse.get_pos()[0] < 290):
                     self.FilterMode = 1
-                elif (pygame.mouse.get_pos()[0] > 350 and pygame.mouse.get_pos()[0] < 440 + self.B3.get_width()):
+                elif (pygame.mouse.get_pos()[0] > 350 and pygame.mouse.get_pos()[0] < 440):
                     self.FilterMode = 2
-                elif (pygame.mouse.get_pos()[0] > 450 and pygame.mouse.get_pos()[0] < 590 + self.B4.get_width()):
+                elif (pygame.mouse.get_pos()[0] > 450 and pygame.mouse.get_pos()[0] < 590):
                     self.FilterMode = 3
 
         return self
@@ -159,16 +226,20 @@ class pygameLogic:
                     if (self.FilterMode == 0):
                         self.FilterBrightFrizz()
                     elif (self.FilterMode == 1):
-                        #
-                        pass
+                        self.FilterHDark()
+                        
                     elif (self.FilterMode == 2):
-                        #
-                        pass
+                        self.FilterPixelate()
+                    
+                    elif (self.FilterMode == 3):
+                        self.FilterAltLine()
+
                     self.ShowBool = 1
                     self.tick += 1
                 else:
                     screen.blit(self.D1, (0,0))
                     screen.blit(self.D2, (0,35))
+                    screen.blit(self.D3, (0,70))
                 
                     
 
@@ -179,6 +250,7 @@ class pygameLogic:
 
             if(self.ShowBool and self.tick > 10):
                 self.tick = 0
+                pyplot.savefig("High resoltion.png",format ="png", dpi=500, bbox_inches='tight', transparent="True")
                 pyplot.show()
                 self.ShowBool = 0
 #                pyplot.savefig('test.png', bbox_inches='tight',pad_inches = 0, dpi = 200)
