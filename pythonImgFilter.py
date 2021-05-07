@@ -7,6 +7,7 @@ from matplotlib import image
 from matplotlib import pyplot
 #from matplotlib.pyplot import ion
 import time
+import math
 
 pygame.init()
 pyplot.axis('off')
@@ -44,8 +45,23 @@ class pygameLogic:
         self.B1 = FONT.render('L-Fringe', True, GREEN, BLUE)
         self.B2 = FONT.render('H-Dark', True, GREEN, BLUE)
         self.B3 = FONT.render('Pixelate', True, GREEN, BLUE)
-        self.B4 = FONT.render('AltLine', True, GREEN, BLUE)
-        self.B5 = FONT.render('Text', True, GREEN, BLUE)
+        self.B4 = FONT.render('Stencil', True, GREEN, BLUE)
+        
+        self.B5 = FONT.render('Dramatize', True, GREEN, BLUE)
+        self.B6 = FONT.render('Text', True, GREEN, BLUE)
+        self.B7 = FONT.render('Text', True, GREEN, BLUE)
+        self.B8 = FONT.render('Text', True, GREEN, BLUE)
+
+        self.B9 = FONT.render('Text', True, GREEN, BLUE)
+        self.B10 = FONT.render('Text', True, GREEN, BLUE)
+        self.B11 = FONT.render('Text', True, GREEN, BLUE)
+        self.B12 = FONT.render('Text', True, GREEN, BLUE)
+
+        self.B13 = FONT.render('Text', True, GREEN, BLUE)
+        self.B14 = FONT.render('Text', True, GREEN, BLUE)
+        self.B15 = FONT.render('Text', True, GREEN, BLUE)
+        self.B16 = FONT.render('Text', True, GREEN, BLUE)
+
 
         self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
         self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
@@ -57,7 +73,25 @@ class pygameLogic:
         self.imageData = list()
         self.ShowBool = 0
         self.tick = 0 #used for delay to allow pygame to have time to finish draw call to screen... did not find a way to check if a draw call is in progress, so I just chosen to tick 10 frames - since then I will be safe for most hardware
+
+
    
+    def FilterDramatize():
+
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+
+        for i in range(len(self.imageData[1])): # y
+            for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
+                if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) > 500):
+                    arr = np.array([self.imageData[1][i][ii][0]*1.1, self.imageData[1][i][ii][1]*1.1, self.imageData[1][i][ii][2]*1.1])
+                    self.imageData[1][i][ii] = arr
+                elif(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) < 300):
+                    arr = np.array([self.imageData[1][i][ii][0]*0.2, self.imageData[1][i][ii][1]*0.2, self.imageData[1][i][ii][2]*0.2])
+                    self.imageData[1][i][ii] = arr
+                
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
     def FilterBrightFrizz(self):
         self.imageData.append(np.asarray(np.copy(self.imageData[0])))
 
@@ -72,7 +106,7 @@ class pygameLogic:
             for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
                  #r,g,b,a <-- alpha may not be present, if using you MUST check for alpha - also always modify in such a way that it is safe for alph and non alpha containing images
                 #YOU MUST CAST ALL VALUES TO AN INT else they are a u8 --> 8 bits is going to overflow and not work as intended
-                if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) > 300):
+                if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) > 500):
                     arr = np.array([self.imageData[1][i][ii][0]*1.2, self.imageData[1][i][ii][1]*1.2, self.imageData[1][i][ii][2]*1.2])
                     self.imageData[1][i][ii] = arr
                     #refrence y and then x axis
@@ -93,7 +127,7 @@ class pygameLogic:
         pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
         return self
 
-    def FilterAltLine(self):
+    def FilterStencil(self):
         self.imageData.append(np.asarray(np.copy(self.imageData[0])))
 
         for i in range(len(self.imageData[1])): # y
@@ -148,11 +182,13 @@ class pygameLogic:
     def SelectButton(self):
         #choose a button to filter with
 
-        pygame.draw.rect(screen, BLUE, (0, 0, WIDTH, self.B1.get_height()) )
+        pygame.draw.rect(screen, BLUE, (0, 0, WIDTH, HEIGHT) )
         pygame.draw.rect(screen, RED, (140, 0, 10, HEIGHT-30) ) 
-        pygame.draw.rect(screen, RED, (290, 0, 10, HEIGHT-30) ) 
-        pygame.draw.rect(screen, RED, (440, 0, 10, HEIGHT-30) ) 
+        pygame.draw.rect(screen, RED, (290, 0, 10, HEIGHT) ) 
+        pygame.draw.rect(screen, RED, (440, 0, 10, HEIGHT) ) 
+        pygame.draw.rect(screen, RED, (600, 0, 50, HEIGHT) ) 
         
+        add = 1
         pygame.draw.rect(screen, RED, (0, self.B1.get_height(), WIDTH, 5) ) 
         
         screen.blit(self.D3, (0,HEIGHT-30))
@@ -164,18 +200,56 @@ class pygameLogic:
         screen.blit(self.B3, (300,0))
 
         screen.blit(self.B4, (450,0))
+        
+        add+=1
+        pygame.draw.rect(screen, RED, (0, self.B1.get_height()*add+5*add, WIDTH+5, 5) ) 
 
+        screen.blit(self.B5,(0,self.B1.get_height()*(add-1)+5))
 
-        if(pygame.mouse.get_pressed()[0] == 1): # indes 0 is left click - true means clicked
-            if (pygame.mouse.get_pos()[1] > 0 and pygame.mouse.get_pos()[1] < self.B1.get_height()):
-                if (pygame.mouse.get_pos()[0] > 0 and pygame.mouse.get_pos()[0] < 140):#I did not normalize these points to allow fine tuning if needed - plus this way iamges can be added easily 
-                    self.FilterMode = 0
-                elif (pygame.mouse.get_pos()[0] > 150 and pygame.mouse.get_pos()[0] < 290):
-                    self.FilterMode = 1
-                elif (pygame.mouse.get_pos()[0] > 350 and pygame.mouse.get_pos()[0] < 440):
-                    self.FilterMode = 2
-                elif (pygame.mouse.get_pos()[0] > 450 and pygame.mouse.get_pos()[0] < 590):
-                    self.FilterMode = 3
+        screen.blit(self.B6,(150,self.B1.get_height()*(add-1)+5))
+
+        screen.blit(self.B7,(300,self.B1.get_height()*(add-1)+5))
+
+        screen.blit(self.B8,(450,self.B1.get_height()*(add-1)+5))
+
+        add+=1
+
+        pygame.draw.rect(screen, RED, (0, self.B1.get_height()*add+5*add, WIDTH, 5) ) 
+
+        screen.blit(self.B9,(0,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B10,(150,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B11,(300,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B12,(450,self.B1.get_height()*(add-1)+5*add))
+
+        add+=1
+
+        pygame.draw.rect(screen, RED, (0, self.B1.get_height()*add+5*add, WIDTH, 5) ) 
+
+        screen.blit(self.B13,(0,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B14,(150,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B15,(300,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B16,(450,self.B1.get_height()*(add-1)+5*add))
+
+        if(pygame.mouse.get_pressed()[0] == 1): # index 0 is left click - true means clicked 
+
+            #split y and x into 5's --> every 
+            if(pygame.mouse.get_pos()[1]<self.B1.get_height()*(add-1)+5*add+35 and pygame.mouse.get_pos()[0]<600): #limit based on implemented filter button positions
+                NormalizedY = math.floor(pygame.mouse.get_pos()[1]/5)
+                NormalizedX = math.floor(pygame.mouse.get_pos()[0]/5)
+                #self.FilterMode = NormalizedY/INTERVALS *4  + NromalizedX
+            
+            
+                #- this path of code normalizes values so it is efficent to click anywhere - better than if else by magnitudes - since its only a bit of math
+                if((NormalizedY!=0 and NormalizedY%8!=0) and (NormalizedY!=7)):#every 7 is a button on the vertical, and then you have 1 block of red, then 7 more of something, then 1 red - so if %8 is 0, we cannot click unless normalized y is 0 for edge case of == 0
+                
+                    if((NormalizedX%30 != 28 and NormalizedX%30!=29)): #28-29 rem which is really 29-30 - 2 is red box 
+                        self.FilterMode = math.floor(NormalizedY/8) * 4  + math.floor(NormalizedX/32)
 
         return self
     
@@ -223,16 +297,9 @@ class pygameLogic:
                     self.SelectImage()
                     #run image loader and make false once loaded image
                     #run filters
-                    if (self.FilterMode == 0):
-                        self.FilterBrightFrizz()
-                    elif (self.FilterMode == 1):
-                        self.FilterHDark()
-                        
-                    elif (self.FilterMode == 2):
-                        self.FilterPixelate()
-                    
-                    elif (self.FilterMode == 3):
-                        self.FilterAltLine()
+                    funcList = [self.FilterBrightFrizz,self.FilterHDark,self.FilterPixelate,self.FilterStencil,self.FilterDramatize]
+
+                    funcList[self.FilterMode]()
 
                     self.ShowBool = 1
                     self.tick += 1
