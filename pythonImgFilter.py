@@ -49,7 +49,7 @@ class pygameLogic:
 
         self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
         self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
-        self.D3 = FONT.render('It can take time to load the image filter on slower hardware!', True, GREEN, (0,0,0,0))
+        self.D3 = FONT.render('It can take time to load the image filter!', True, GREEN, (0,0,0,0))
         self.pos = (0,0)
 
         self.NeedImage = 0 # start image loader as false
@@ -93,23 +93,23 @@ class pygameLogic:
         pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
         return self
 
-        def FilterAltLine(self):
-            self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+    def FilterAltLine(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
 
-            for i in range(len(self.imageData[1])): # y
-                for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
-                    if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) < 400):
-                        if(i%2 == 0):
-                            arr = np.array([self.imageData[1][i][ii][0]*0.2, self.imageData[1][i][ii][1]*0.2, self.imageData[1][i][ii][2]*0.2])
-                            self.imageData[1][i][ii] = arr
+        for i in range(len(self.imageData[1])): # y
+            for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
+                if(int(self.imageData[1][i][ii][0]) + int(self.imageData[1][i][ii][1]) + int(self.imageData[1][i][ii][2]) < 400):
+                    if(i%2 == 0):
+                        arr = np.array([self.imageData[1][i][ii][0]*0.2, self.imageData[1][i][ii][1]*0.2, self.imageData[1][i][ii][2]*0.2])
+                        self.imageData[1][i][ii] = arr
                         
-                        else:
-                            arr = np.array([self.imageData[1][i][ii][0]*1.3, self.imageData[1][i][ii][1]*1.3, self.imageData[1][i][ii][2]*1.3])
-                            self.imageData[1][i][ii] = arr
+                    else:
+                        arr = np.array([self.imageData[1][i][ii][0]*1.2, self.imageData[1][i][ii][1]*1.2, self.imageData[1][i][ii][2]*1.2])
+                        self.imageData[1][i][ii] = arr
                         
                             
-            pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
-            return self
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
 
 
     def FilterPixelate(self):
@@ -149,13 +149,13 @@ class pygameLogic:
         #choose a button to filter with
 
         pygame.draw.rect(screen, BLUE, (0, 0, WIDTH, self.B1.get_height()) )
-        pygame.draw.rect(screen, RED, (140, 0, 10, HEIGHT) ) 
-        pygame.draw.rect(screen, RED, (290, 0, 10, HEIGHT) ) 
-        pygame.draw.rect(screen, RED, (440, 0, 10, HEIGHT) ) 
+        pygame.draw.rect(screen, RED, (140, 0, 10, HEIGHT-30) ) 
+        pygame.draw.rect(screen, RED, (290, 0, 10, HEIGHT-30) ) 
+        pygame.draw.rect(screen, RED, (440, 0, 10, HEIGHT-30) ) 
         
         pygame.draw.rect(screen, RED, (0, self.B1.get_height(), WIDTH, 5) ) 
         
-
+        screen.blit(self.D3, (0,HEIGHT-30))
 
         screen.blit(self.B1, (0,0))
 
