@@ -67,6 +67,8 @@ class pygameLogic:
         self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
         self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
         self.D3 = FONT.render('It can take time to load the image filter!', True, GREEN, (0,0,0,0))
+        self.D4 = FONT.render('Close the extra window and click to go back', True, GREEN, (0,0,0,0))
+
         self.pos = (0,0)
 
         self.NeedImage = 0 # start image loader as false
@@ -503,9 +505,19 @@ class pygameLogic:
                     screen.blit(self.D1, (0,0))
                     screen.blit(self.D2, (0,35))
                     screen.blit(self.D3, (0,70))
-                
-                    
+                    screen.blit(self.D4, (0,300))
 
+                    if (pygame.mouse.get_pressed()[0] == 1): #left click only ;P
+                        self.tick = 0
+                        self.FilterMode = -1
+                        self.NeedImage = 0
+                        self.FileChosen = ""
+                        self.imageData = list()
+                        self.ShowBool = 0
+                    
+                    #TODO: add back button that resets var states and say you need to close
+                    #TODO: add more filters
+                    #TODO: ? I may want to make it look better
             pygame.display.update()
             
             if(self.tick!=0):
