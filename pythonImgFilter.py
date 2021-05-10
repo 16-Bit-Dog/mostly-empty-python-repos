@@ -468,6 +468,9 @@ class pygameLogic:
 
         imageD = image.imread(self.FileChosen)
 
+        if(len(imageD[0][0])==4):
+            kill() #only RGB support
+
         self.imageData.append(imageD)
 
         #show OG image
@@ -514,7 +517,16 @@ class pygameLogic:
                         self.FileChosen = ""
                         self.imageData = list()
                         self.ShowBool = 0
-                    
+                        pyplot.axis('off')
+                        pyplot.grid(b=None)
+                        pyplot.tight_layout(pad=0.0, w_pad=0.0, h_pad=0.0)
+
+                        pyplot.gca().set_axis_off()
+
+                        pyplot.margins(0,0)
+                        pyplot.gca().xaxis.set_major_locator(pyplot.NullLocator())
+                        pyplot.gca().yaxis.set_major_locator(pyplot.NullLocator())
+
                     #TODO: add back button that resets var states and say you need to close
                     #TODO: add more filters
                     #TODO: ? I may want to make it look better
@@ -525,7 +537,7 @@ class pygameLogic:
 
             if(self.ShowBool and self.tick > 10):
                 self.tick = 0
-                pyplot.savefig("High resoltion.png",format ="png", dpi=500, bbox_inches='tight', transparent="True")
+                pyplot.savefig("High resoltion.jpg",format ="jpg", dpi=200, bbox_inches='tight', transparent="True")
                 pyplot.show()
                 self.ShowBool = 0
 #                pyplot.savefig('test.png', bbox_inches='tight',pad_inches = 0, dpi = 200)
