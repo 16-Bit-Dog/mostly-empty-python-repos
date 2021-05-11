@@ -67,7 +67,7 @@ class pygameLogic:
         self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
         self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
         self.D3 = FONT.render('It can take time to load the image filter!', True, GREEN, (0,0,0,0))
-        self.D4 = FONT.render('Close the extra window and click to go back', True, GREEN, (0,0,0,0))
+        self.D4 = FONT.render('Close the extra window and right click to go back', True, GREEN, (0,0,0,0))
 
         self.pos = (0,0)
 
@@ -510,7 +510,7 @@ class pygameLogic:
                     screen.blit(self.D3, (0,70))
                     screen.blit(self.D4, (0,300))
 
-                    if (pygame.mouse.get_pressed()[0] == 1): #left click only ;P
+                    if (pygame.mouse.get_pressed()[2] == 1): #left click only ;P
                         self.tick = 0
                         self.FilterMode = -1
                         self.NeedImage = 0
@@ -537,7 +537,7 @@ class pygameLogic:
 
             if(self.ShowBool and self.tick > 10):
                 self.tick = 0
-                pyplot.savefig("High resoltion.jpg",format ="jpg", dpi=200, bbox_inches='tight', transparent="True")
+                pyplot.savefig("High resoltion.jpg",format ="jpg", dpi=150, bbox_inches='tight', transparent="True")
                 pyplot.show()
                 self.ShowBool = 0
 #                pyplot.savefig('test.png', bbox_inches='tight',pad_inches = 0, dpi = 200)
