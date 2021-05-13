@@ -63,6 +63,12 @@ class pygameLogic:
         self.B15 = FONT.render('GreyGrain', True, GREEN, BLUE)
         self.B16 = FONT.render('AllGrain', True, GREEN, BLUE)
 
+        self.B17 = FONT.render('Box Flip', True, GREEN, BLUE)
+        self.B18 = FONT.render('GlassShot', True, GREEN, BLUE)
+        self.B19 = FONT.render('Flake', True, GREEN, BLUE)
+        self.B20 = FONT.render('Swiped', True, GREEN, BLUE)
+
+
 
         self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
         self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
@@ -76,6 +82,83 @@ class pygameLogic:
         self.imageData = list()
         self.ShowBool = 0
         self.tick = 0 #used for delay to allow pygame to have time to finish draw call to screen... did not find a way to check if a draw call is in progress, so I just chosen to tick 10 frames - since then I will be safe for most hardware
+
+    def FilterBoxFlip(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+        
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+
+        for i in range(0,len(self.imageData[1]),50): # y
+            
+            for ii in range(0,len(self.imageData[1][i]),50): #tuple of row - x of image
+                if(i+50<len(self.imageData[1]) and ii+50 < len(self.imageData[1][i])):
+                    for x in range(49,0, -1):
+                        for y in range(49,0, -1):
+                            arr = np.array([self.imageData[2][i+x][ii+y][0], self.imageData[2][i+x][ii+y][1], self.imageData[2][i+x][ii+y][2]])
+                            self.imageData[1][i+(49-x)][ii+(49-y)] = arr
+
+                #else:
+                    #for x in range(0,49):
+                    #    for y in range(0,49):
+
+
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
+    def FilterGlassShot(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+        
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+
+        for i in range(len(self.imageData[1])): # y
+            for ii in range(len(self.imageData[1][i])): #tuple of row - x of image
+                if(i<len(self.imageData[1])-101 and ii<len(self.imageData[1][i])-101 ):
+                    arr = np.array([self.imageData[2][i+random.randint(50,100)][ii+random.randint(50,100)][0], self.imageData[2][i+random.randint(50,100)][ii+random.randint(50,100)][1], self.imageData[2][i+random.randint(50,100)][ii+random.randint(50,100)][2]])
+                    self.imageData[1][i][ii] = arr
+                else:
+                    arr = np.array([self.imageData[1][i-random.randint(50,100)][ii-random.randint(50,100)][0], self.imageData[1][i-random.randint(50,100)][ii-random.randint(50,100)][1], self.imageData[1][i-random.randint(50,100)][ii-random.randint(50,100)][2]])
+                    self.imageData[1][i][ii] = arr
+
+                
+
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
+    def FilterSoftFlake(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+        arrX = list()
+        arrY = list()
+        TmpRand = random.randint(0,int(len(self.imageData[1])/2))
+        for i in range(0,len(self.imageData[1])-TmpRand):
+            arrY.append(random.randint(0,int(len(self.imageData[1]))))
+        TmpRand = random.randint(0,int(len(self.imageData[1][0])/2))
+        for i in range(0,len(self.imageData[1][0])-TmpRand): # lazy math
+            arrX.append(random.randint(0,int(len(self.imageData[1][0]))))
+
+        if(len(arrY)<len(arrX)):
+            for i in range(len(arrY)): # y
+                arr = np.array([255-self.imageData[1][arrY[i]][arrX[i]][0]*0.1, 255-self.imageData[1][arrY[i]][arrX[i]][1]*0.1, 255-self.imageData[1][arrY[i]][arrX[i]][2]*0.1])
+                self.imageData[1][arrY[i]][arrX[i]] = arr
+        else:
+            for i in range(len(arrX)): # y
+                arr = np.array([255-self.imageData[1][arrY[i]][arrX[i]][0]*0.1, 255-self.imageData[1][arrY[i]][arrX[i]][1]*0.1, 255-self.imageData[1][arrY[i]][arrX[i]][2]*0.1])
+                self.imageData[1][arrY[i]][arrX[i]] = arr
+
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
+    def FilterSwiped(self):
+        self.imageData.append(np.asarray(np.copy(self.imageData[0])))
+        for i in range(0,len(self.imageData[1]),2): # y
+            for ii in range(0,len(self.imageData[1][i]),2): #tuple of row - x of image
+                if(i+1<len(self.imageData[1]) and i+1<len(self.imageData[1][i])):
+                    arr = np.array([255-self.imageData[1][i][ii][0], 255-self.imageData[1][i][ii][1], 255-self.imageData[1][i][ii][2]])
+                    self.imageData[1][i][ii] = arr
+
+
+        pyplot.imshow(PIL.Image.fromarray(self.imageData[1])) #overrides... but meh for now
+        return self
+
 
     def FilterAllGrain(self):
         self.imageData.append(np.asarray(np.copy(self.imageData[0])))
@@ -433,6 +516,19 @@ class pygameLogic:
 
         screen.blit(self.B16,(450,self.B1.get_height()*(add-1)+5*add))
 
+        add+=1
+
+        pygame.draw.rect(screen, RED, (0, self.B1.get_height()*add+5*add, WIDTH, 5) ) 
+
+        screen.blit(self.B17,(0,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B18,(150,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B19,(300,self.B1.get_height()*(add-1)+5*add))
+
+        screen.blit(self.B20,(450,self.B1.get_height()*(add-1)+5*add))
+
+
         if(pygame.mouse.get_pressed()[0] == 1): # index 0 is left click - true means clicked 
 
             #split y and x into 5's --> every 
@@ -497,7 +593,7 @@ class pygameLogic:
                     self.SelectImage()
                     #run image loader and make false once loaded image
                     #run filters
-                    funcList = [self.FilterBrightFrizz,self.FilterHDark,self.FilterPixelate,self.FilterStencilH,self.FilterDramatize, self.FilterPixelDither, self.FilterStencilV, self.FilterInverseBase, self.FilterStencilD, self.FilterSonic, self.FilterRandStencilH, self.FilterRandStencilV, self.FilterSmartNoise, self.FilterGreyScale, self.FilterGreyGrain, self.FilterAllGrain]
+                    funcList = [self.FilterBrightFrizz,self.FilterHDark,self.FilterPixelate,self.FilterStencilH,self.FilterDramatize, self.FilterPixelDither, self.FilterStencilV, self.FilterInverseBase, self.FilterStencilD, self.FilterSonic, self.FilterRandStencilH, self.FilterRandStencilV, self.FilterSmartNoise, self.FilterGreyScale, self.FilterGreyGrain, self.FilterAllGrain, self.FilterBoxFlip, self.FilterGlassShot, self.FilterSoftFlake, self.FilterSwiped]
                     # ^ faster than if else...
 
                     funcList[self.FilterMode]()
