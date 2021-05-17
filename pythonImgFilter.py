@@ -1,3 +1,4 @@
+#pyinstaller "C:\repository for Visual\pythonImgFilter\pythonImgFilter\pythonImgFilter.py" in powershell compiles it nicly
 import numpy as np   
 import PIL #meh, I'll import all for now
 import pygame
