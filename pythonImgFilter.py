@@ -70,7 +70,7 @@ class pygameLogic:
 
 
 
-        self.D1 = FONT.render('Pop Up windows show the Before and After', True, GREEN, (0,0,0,0))
+        self.D1 = FONT.render('ONLY RGB images - do not use PNG', True, GREEN, (0,0,0,0))
         self.D2 = FONT.render('saves in program dir; click cartridge to save again!', True, GREEN, (0,0,0,0))
         self.D3 = FONT.render('It can take time to load the image filter!', True, GREEN, (0,0,0,0))
         self.D4 = FONT.render('Close the extra window and right click to go back', True, GREEN, (0,0,0,0))
